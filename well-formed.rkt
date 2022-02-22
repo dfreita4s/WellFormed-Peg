@@ -42,15 +42,15 @@
                                        (cadr listRandomNumber)
                                        (last listRandomNumber)) 1)))
         (testLoop (- n 1)))
-      (display "All 1000000 tests passed successfully")
+      (display "All tests passed successfully")
       )
   )
 ;(testPEG '(∅ (* ε) ())) ;; Grammar Expression ()?
 ;(testLoop 2)
-;(testLoop 100) ; oK
-;(testLoop 1000) ; oK
-;(testLoop 10000) ; oK
-;(testLoop 100000) ; oK
+;(testLoop 100)     ; oK
+;(testLoop 1000)    ; oK
+;(testLoop 10000)   ; oK
+;(testLoop 100000)  ; oK
 ;(testLoop 1000000) ; oK
 
 
