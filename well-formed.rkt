@@ -25,7 +25,7 @@
 (define (getExpression e)
   (print "Expression: ")
   (print (cdr e))
-  (cdr e)
+  (car (cdr e))
   )
 
 
