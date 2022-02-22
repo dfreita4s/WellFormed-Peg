@@ -53,9 +53,7 @@
                                      (is-WF grammar (caddr e) non-terminal)))]
               [(eq? id '!)  (is-WF grammar (cadr e) non-terminal)]
               [(eq? id '*)  (and (is-WF grammar (cadr e) non-terminal)
-                                 ;verifica se a grammar é ∅, se n for, usa o resultado do verf-judg-nt pra verificar o judgment do *
-                                 ;pra ele n usar o não terminal puro.
-                                 (zero⇀? grammar (cadr e)))]; passar a grammar no verf-judg para nao precisar de verf a gramatica
+                                 (zero⇀? grammar (cadr e)))]
               [else  #f] 
               )
 
