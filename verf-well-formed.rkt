@@ -1,7 +1,7 @@
 #lang racket
 (require "./peg.rkt")
 (require "./judgments.rkt")
-(require redex)
+(require redex) ; nao usar redex
 (provide (all-defined-out))
 
 (define-judgment-form Peg
@@ -24,13 +24,14 @@
 (define nt '())
 (define (verf-judg-nt grammar exp non-terminal) 
 
-  (define result (judgment-holds (lookup ,grammar ,exp R) R))
+  (define result (judgment-holds (lookup ,grammar ,exp R) R)) ;; trocar para uma funcao em racket
   
  
   (if (member (term ⊥) (judgment-holds (lookup ,grammar ,exp R) R));;
       #f
       (car result) ;ele sai do lookup como uma lista, ex.: '(ε), precisamos do termo puro, então fazemos o car
-      ))
+      )
+  )
   
 
 
@@ -71,7 +72,6 @@
 ; Start function
 (define (test-WF e)
   (is-WF (car e) (list-ref (cdr e) 2) '())
-
   )
 
 (define (getGrammar expL)

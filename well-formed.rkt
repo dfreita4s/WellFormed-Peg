@@ -45,6 +45,7 @@
       (display "All tests passed successfully")
       )
   )
+
 ;(testPEG '(∅ (* ε) ())) ;; Grammar Expression ()?
 ;(testLoop 2)
 ;(testLoop 100)     ; oK
@@ -53,4 +54,19 @@
 ;(testLoop 100000)  ; oK
 ;(testLoop 1000000) ; oK
 
+; FAZER pegar todas as gerações ;; (sample (gen:peg 3 2 3) 4)
+
+#|
+(define (allTypesMatch g g1 )
+   (andmap (lambda (t) (matchTypes t (assoc (car t) g) )) g1)
+  )
+
+(define-property type-checks([peg  (gen:peg 3 5 2)])
+    (check-equal?  (testgen peg) #t)
+  )
+
+(define-property type-contexts-match([peg  (gen:peg 3 5 2)])
+    (check-equal?  (allTypesMatch (solution2context (infer (peg2struct peg))) (last peg)) #t)
+  )
+|#
 
