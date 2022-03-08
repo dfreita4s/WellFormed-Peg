@@ -15,11 +15,11 @@
   )
 ; se nao consumir é falso
 ;; (* (/ (! ε) ε)) const
-(define (zero⇀? grammar e) 
+(define (zero⇀? grammar e) ;; acho que precisa fazer de algum jeito que use os (f, s, 1, 0) 
   (if (list? e)
       (let ((id (car e)))
         (cond [(eq? id '/)  (or (zero⇀? grammar (cadr e)) (zero⇀? grammar (caddr e)))]
-              [(eq? id '•)  (and (zero⇀? grammar (cadr e)) (zero⇀? grammar (caddr e)))]
+              [(eq? id '•)  (or (zero⇀? grammar (cadr e)) (zero⇀? grammar (caddr e)))]
               [(eq? id '!)  (zero⇀? grammar (cadr e))]
               [(eq? id '*)  (zero⇀? grammar (cadr e))]
               [else  #f] 
