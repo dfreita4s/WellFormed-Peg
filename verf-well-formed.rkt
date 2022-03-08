@@ -15,18 +15,17 @@
   )
 
 (define (zero⇀? grammar exp) 
-  (if (member 0 (judgment-holds (⇀ ,grammar ,exp D) D))
+  (if (member 0 (judgment-holds (⇀ ,grammar ,exp D) D)) ;; (* (/ (! ε) ε)) 
       #f
       #t
       )
   )
 
 (define nt '())
-(define (verf-judg-nt grammar exp non-terminal) 
+(define (verf-judg-nt grammar exp non-terminal) ;; aqui a gente verifica se consome as coisas 
 
   (define result (judgment-holds (lookup ,grammar ,exp R) R)) ;; trocar para uma funcao em racket
   
- 
   (if (member (term ⊥) (judgment-holds (lookup ,grammar ,exp R) R));;
       #f
       (car result) ;ele sai do lookup como uma lista, ex.: '(ε), precisamos do termo puro, então fazemos o car
