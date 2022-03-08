@@ -13,11 +13,26 @@
    (WF? state #t)]
   
   )
+; se nao consumir é falso
+;; (* (/ (! ε) ε)) const
+(define (zero⇀? grammar e) 
+  (if (list? e)
+      (let ((id (car e)))
+        (cond [(eq? id '/)  (or (zero⇀? grammar (cadr e)) (zero⇀? grammar (caddr e)))]
+              [(eq? id '•)  (and (zero⇀? grammar (cadr e)) (zero⇀? grammar (caddr e)))]
+              [(eq? id '!)  (zero⇀? grammar (cadr e))]
+              [(eq? id '*)  (zero⇀? grammar (cadr e))]
+              [else  #f] 
+              )
 
-(define (zero⇀? grammar exp) 
-  (if (member 0 (judgment-holds (⇀ ,grammar ,exp D) D)) ;; (* (/ (! ε) ε)) 
-      #f
-      #t
+        )
+      (cond [(number? e) #t]
+            [(eq? e 'ε)  #f]
+            [(not (eq? grammar '∅)) (if (verifica-list-nonterminal grammar e)
+                                        (is-WF grammar (verf-judg-nt grammar e) (cons e)) ;; lookup nao sei como verificar
+                                        #f)] 
+            [else  #f]
+            )
       )
   )
 
@@ -47,7 +62,7 @@
 (define (is-WF grammar e non-terminal) ; (grammar expression non-terminal)
   (if (list? e)
       (let ((id (car e)))
-        (cond [(eq? id '/)  (and (is-WF grammar (cadr e) non-terminal) (is-WF grammar (caddr e) non-terminal))]
+        (cond [(eq? id '/)  (and (is-WF grammar (cadr e) non-terminal) (is-WF grammar (caddr e) non-terminal))] ;; aqui teria que ser um or, nao?
               [(eq? id '•)  (and (is-WF grammar (cadr e) non-terminal)
                                  (or (zero⇀? grammar (cadr e))
                                      (is-WF grammar (caddr e) non-terminal)))]
