@@ -15,6 +15,7 @@
   )
 ; se nao consumir é falso
 ;; (* (/ (! ε) ε)) const
+;testar se a resposta da outra tem o 0
 (define (zero⇀? grammar e non-terminal) ;; acho que precisa fazer de algum jeito que use os (f, s, 1, 0) 
   (if (list? e)
       (let ((id (car e)))
@@ -48,16 +49,20 @@
   )
   
 
-(define (lookup-nt grammar exp)
-  (define nt (car grammar))
-  ;(println nt)
-  (define exp-nt (second grammar))
-  ;(println exp-nt)
-  (if (eq? nt exp)
-      (cond [(eq? nt '∅) #f]
-        [else exp-nt])
-      (lookup-nt (third grammar) exp))
+(define (lookup-nt grammar snt)
+  (if (eq? grammar '∅)
+      #f
+      (let ([nt (car grammar)]
+            [exp-nt (second grammar)]
+            )
+        (if (eq? nt snt)
+             exp-nt
+             (lookup-nt (third grammar) snt))
+        )
+      )
   )
+
+(lookup-nt '(A (/ 0 B) (B A ∅)) 'A)
 
 (define (verifica-list-nonterminal grammar exp non-terminal)
   ;(define result (judgment-holds (lookup ,grammar ,exp R) R))
@@ -86,7 +91,7 @@
       (cond [(number? e) #t]
             [(eq? e 'ε)  #t]
             [(not (eq? grammar '∅)) (if (verifica-list-nonterminal grammar e non-terminal)
-                                        (is-WF grammar (lookup-nt grammar e) (cons e non-terminal)) 
+                                        (is-WF grammar (lookup-nt grammar e) (cons non-terminal e)) 
                                         #f)] 
             [else  #f]
             )
@@ -95,7 +100,7 @@
   )
 
 
-(is-WF '(A (/ 0 B) (B 0) ∅) '(* A) '())
+(is-WF '(A (/ 0 B) (B 0 ∅)) '(* A) '())
 ;(is-WF '(A (/ 0 B) (B A) ∅) '(* A) '())
 
 ; Start function
