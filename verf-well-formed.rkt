@@ -13,6 +13,13 @@
    (WF? state #t)]
   
   )
+
+;; Usar funcao auxiliar para responder com os termos do ford
+
+#;(define (verf-ford grammar exp)
+  
+  )
+
 ; se nao consumir é falso
 ;; (* (/ (! ε) ε)) const
 ;testar se a resposta da outra tem o 0
@@ -30,7 +37,7 @@
       (cond [(number? e) #t]
             [(eq? e 'ε)  #f]
             [(not (eq? grammar '∅)) (if (verifica-list-nonterminal grammar e non-terminal)
-                                        (is-WF grammar (lookup-nt grammar e) (append non-terminal e)) ;; lookup nao sei como verificar
+                                        (is-WF grammar (lookup-nt grammar e) (append non-terminal e)) 
                                         #f)] 
             [else  #f]
             )
