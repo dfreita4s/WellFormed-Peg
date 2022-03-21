@@ -113,7 +113,7 @@
     [(list '* e1) (let* ([r1 (⇀ grammar e1)])
                     (if (⇀1? r1)
                         '(1)
-                        (if (⇀f? r1)
+                        (if (or (⇀0? r1) (⇀f? r1)) ;; Coloquei o ⇀0? mas acho que n é pra colocar
                             '(0)
                             (println "Not expeted"))))] ;; Others cases aren't in Ford definition
 
