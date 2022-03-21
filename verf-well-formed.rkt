@@ -91,7 +91,10 @@
                             [r2 (⇀ grammar e2)])
                        (if (⇀f? r1) 
                            (append r2 (remove 'f r1))
-                           r1))]   
+                           r1))]
+    [(list '• e1 e2) (let* ([r1 (⇀ grammar e1)]
+                            [r1 (⇀ grammar e2)])
+                       (if ()))]   ;; inicio do sequence
     [(? number?) '(1 f)]
     [(? symbol?)  (⇀ grammar (lookup-nt grammar e))]
     )
