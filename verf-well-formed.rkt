@@ -72,6 +72,9 @@
 (define (⇀0? xs)
   (member 0 xs))
 
+(define (⇀1? xs)
+  (member 1 xs))
+
 (define (⇀f? xs)
   (member 'f xs))
 
@@ -79,7 +82,7 @@
   (or (member 0 xs) (member 1 xs)))
 
 
-; (⇀ '(A ε ∅) 'A) fazer o resto * ! bolinha
+; (⇀ '(A ε ∅) 'A) fazer o resto * ! •
 ; (/ 1 ε)
 ; (⇀ '∅ '1) ==> '(1 f)
 ; (⇀ '∅ 'ε) ==> '(0)
@@ -92,9 +95,35 @@
                        (if (⇀f? r1) 
                            (append r2 (remove 'f r1))
                            r1))]
+
     [(list '• e1 e2) (let* ([r1 (⇀ grammar e1)]
-                            [r1 (⇀ grammar e2)])
-                       (if ()))]   ;; inicio do sequence
+                            [r2 (⇀ grammar e2)])
+                       (if (and (⇀0? r1) (⇀0? r2))
+                           '(0)
+                           (if (and (⇀1? r1) (⇀s? r2))
+                               '(1)
+                               (if (and (⇀s? r1) (⇀1? r2))
+                                   '(1)
+                                   (if (⇀f? r1)
+                                       '(f)
+                                       (if (and (⇀s? r1) (⇀f? r2))
+                                           '(f)
+                                           (println "Not expeted")))))))] ;; Others cases aren't in Ford definition
+
+    [(list '* e1) (let* ([r1 (⇀ grammar e1)])
+                    (if (⇀1? r1)
+                        '(1)
+                        (if (⇀f? r1)
+                            '(0)
+                            (println "Not expeted"))))] ;; Others cases aren't in Ford definition
+
+    [(list '! e1) (let* ([r1 (⇀ grammar e1)])
+                    (if (⇀s? r1)
+                        '(f)
+                        (if (⇀f? r1)
+                            '(0)
+                            (println "Not expeted"))))] ;; Others cases aren't in Ford definition
+
     [(? number?) '(1 f)]
     [(? symbol?)  (⇀ grammar (lookup-nt grammar e))]
     )
