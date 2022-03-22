@@ -69,6 +69,8 @@
       )
   )
 
+;; 
+
 (define (⇀0? xs)
   (member 0 xs))
 
@@ -81,6 +83,13 @@
 (define (⇀s? xs)
   (or (member 0 xs) (member 1 xs)))
 
+(define (=> c s)
+  (if c
+      s
+      '()))
+
+; e1 -> '(0 f)
+; e2 -> '(1 f)
 
 ; (⇀ '(A ε ∅) 'A) fazer o resto * ! •
 ; (/ 1 ε)
@@ -95,27 +104,21 @@
                        (if (⇀f? r1) 
                            (append r2 (remove 'f r1))
                            r1))]
-
     [(list '• e1 e2) (let* ([r1 (⇀ grammar e1)]
                             [r2 (⇀ grammar e2)])
-                       (if (and (⇀0? r1) (⇀0? r2))
-                           '(0)
-                           (if (and (⇀1? r1) (⇀s? r2))
-                               '(1)
-                               (if (and (⇀s? r1) (⇀1? r2))
-                                   '(1)
-                                   (if (⇀f? r1)
-                                       '(f)
-                                       (if (and (⇀s? r1) (⇀f? r2))
-                                           '(f)
-                                           (println "Not expeted")))))))] ;; Others cases aren't in Ford definition
-
-    [(list '* e1) (let* ([r1 (⇀ grammar e1)])
+                       (set-union (=> (and (⇀0? r1) (⇀0? r2)) '(0))
+                                  (=> (and (⇀1? r1) (⇀s? r2)) '(1))
+                                  (=> (and (⇀s? r1) (⇀1? r2)) '(1))
+                                  (=> (⇀f? r1) '(f))
+                                  (=> (and (⇀s? r1) (⇀f? r2)) '(f))))] 
+    [(list '* e1) (let* ([r1 (⇀ grammar e1)]) ;; Fazer igual esse codigo de cima em todos os casos e implementar o wf
                     (if (⇀1? r1)
                         '(1)
-                        (if (or (⇀0? r1) (⇀f? r1)) ;; Coloquei o ⇀0? mas acho que n é pra colocar
+                        (if (⇀f? r1) 
                             '(0)
-                            (println "Not expeted"))))] ;; Others cases aren't in Ford definition
+                            (if (⇀0? r1) 
+                                '()
+                                (println "Not expeted")))))] ;; Others cases aren't in Ford definition
 
     [(list '! e1) (let* ([r1 (⇀ grammar e1)])
                     (if (⇀s? r1)
