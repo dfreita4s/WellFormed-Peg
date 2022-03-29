@@ -112,20 +112,13 @@
                                   (=> (⇀f? r1) '(f))
                                   (=> (and (⇀s? r1) (⇀f? r2)) '(f))))] 
     [(list '* e1) (let* ([r1 (⇀ grammar e1)]) ;; Fazer igual esse codigo de cima em todos os casos e implementar o wf
-                    (if (⇀1? r1)
-                        '(1)
-                        (if (⇀f? r1) 
-                            '(0)
-                            (if (⇀0? r1) 
-                                '()
-                                (println "Not expeted")))))] ;; Others cases aren't in Ford definition
+                    (set-union (=> (⇀1? r1) '(1))
+                               (=> (⇀f? r1) '(0))
+                               (=> (⇀0? r1) '())))] 
 
     [(list '! e1) (let* ([r1 (⇀ grammar e1)])
-                    (if (⇀s? r1)
-                        '(f)
-                        (if (⇀f? r1)
-                            '(0)
-                            (println "Not expeted"))))] ;; Others cases aren't in Ford definition
+                    (set-union (=> (⇀s? r1) '(f))
+                               (=> (⇀f? r1) '(0))))] 
 
     [(? number?) '(1 f)]
     [(? symbol?)  (⇀ grammar (lookup-nt grammar e))]
