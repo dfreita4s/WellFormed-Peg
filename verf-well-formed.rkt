@@ -96,32 +96,36 @@
 ; (⇀ '∅ '1) ==> '(1 f)
 ; (⇀ '∅ 'ε) ==> '(0)
 ; (⇀ '∅ '(/ 1 ε)) ==> '(1 0)
-(define (⇀ grammar e) 
+
+;fazer uma funçao auxiliar com o terceiro parametro '() 
+(define (⇀ grammar e [nts '()])
   (match e
     ['ε '(0)]
-    [(list '/ e1 e2) (let* ([r1 (⇀ grammar e1)]
-                            [r2 (⇀ grammar e2)])
+    [(list '/ e1 e2) (let* ([r1 (⇀ grammar e1 nts)]
+                            [r2 (⇀ grammar e2 nts)])
                        (if (⇀f? r1) 
                            (append r2 (remove 'f r1))
                            r1))]
-    [(list '• e1 e2) (let* ([r1 (⇀ grammar e1)]
-                            [r2 (⇀ grammar e2)])
+    [(list '• e1 e2) (let* ([r1 (⇀ grammar e1 nts)]
+                            [r2 (⇀ grammar e2 nts)])
                        (set-union (=> (and (⇀0? r1) (⇀0? r2)) '(0))
                                   (=> (and (⇀1? r1) (⇀s? r2)) '(1))
                                   (=> (and (⇀s? r1) (⇀1? r2)) '(1))
                                   (=> (⇀f? r1) '(f))
                                   (=> (and (⇀s? r1) (⇀f? r2)) '(f))))] 
-    [(list '* e1) (let* ([r1 (⇀ grammar e1)]) ;; Fazer igual esse codigo de cima em todos os casos e implementar o wf
+    [(list '* e1) (let* ([r1 (⇀ grammar e1 nts)])
                     (set-union (=> (⇀1? r1) '(1))
                                (=> (⇀f? r1) '(0))
-                               (=> (⇀0? r1) '())))] 
+                               ))] 
 
-    [(list '! e1) (let* ([r1 (⇀ grammar e1)])
+    [(list '! e1) (let* ([r1 (⇀ grammar e1 nts)])
                     (set-union (=> (⇀s? r1) '(f))
                                (=> (⇀f? r1) '(0))))] 
 
     [(? number?) '(1 f)]
-    [(? symbol?)  (⇀ grammar (lookup-nt grammar e))]
+    [(? symbol?)  (if (member e nts)
+                      '()
+                      (⇀ grammar (lookup-nt grammar e) (cons e nts)))]
     )
   )
 (define nt '())
@@ -141,7 +145,7 @@
       #f
       (let ([nt (car grammar)]
             [exp-nt (second grammar)]
-            )
+            ) 
         (if (eq? nt snt)
             exp-nt
             (lookup-nt (third grammar) snt))
@@ -149,37 +153,29 @@
       )
   )
 
-(lookup-nt '(A (/ 0 B) (B A ∅)) 'A)
+;(lookup-nt '(A (/ 0 B) (B A ∅)) 'A)
 
-(define (verifica-list-nonterminal grammar exp non-terminal)
-  ;(define result (judgment-holds (lookup ,grammar ,exp R) R))
-  (println non-terminal)
-  (if (> (length (list non-terminal)) 1)
-      (if (check-duplicates non-terminal)
-          #f
-          #t)
-      #t)
-  )
-
+;; (is-WF '(K (/ (• ε 3) (• ε 2)) (C (• (/ 2 E) (! K)) (E (• (/ 1 3) (/ 3 C)) ∅))) '(* (• ε C)) '()) ;;da loop
 (define (is-WF grammar e non-terminal) ; (grammar expression non-terminal)
   (if (list? e)
       (let ((id (car e)))
         (cond [(eq? id '/)  (and (is-WF grammar (cadr e) non-terminal) (is-WF grammar (caddr e) non-terminal))] 
               [(eq? id '•)  (and (is-WF grammar (cadr e) non-terminal)
-                                 (or (member '0 (⇀ grammar (cadr e))) ;; precisa desse or?
-                                     (is-WF grammar (caddr e) non-terminal)))]
+                                 (or (not (member '0 (⇀ grammar (cadr e))))
+                                     (is-WF grammar (caddr e) non-terminal))
+                                 )]
               [(eq? id '!)  (is-WF grammar (cadr e) non-terminal)]
-              [(eq? id '*)  (and (is-WF grammar (cadr e) non-terminal)
-                                 (not (member '0 (⇀ grammar (cadr e)))))]
+              [(eq? id '*)  (and (not (member '0 (⇀ grammar (cadr e)))) 
+                                 (is-WF grammar (cadr e) non-terminal))]
               [else  #f] 
               )
 
         )
       (cond [(number? e) #t]
             [(eq? e 'ε)  #t]
-            [(not (eq? grammar '∅)) (if (verifica-list-nonterminal grammar e non-terminal)
-                                        (is-WF grammar (lookup-nt grammar e) (cons non-terminal e)) 
-                                        #f)] 
+            [(not (eq? grammar '∅)) (if (member e non-terminal)
+                                        #f
+                                        (is-WF grammar (lookup-nt grammar e) (cons e non-terminal)))] 
             [else  #f]
             )
       )
@@ -187,8 +183,8 @@
   )
 
 
-(is-WF '(A (/ 0 B) (B 0 ∅)) '(* A) '())
-;(is-WF '(A (/ 0 B) (B A) ∅) '(* A) '())
+;(is-WF '(A (/ 0 B) (B 0 ∅)) '(* A) '())
+;(is-WF '(A (/ 0 B) (B A ∅)) '(* A) '())
 ;(is-WF '∅ '(*(/ ε 1)) '())
 
 ; Start function
