@@ -166,11 +166,11 @@
       (let ((id (car e)))
         (cond [(eq? id '/)  (and (is-WF grammar (cadr e) non-terminal) (is-WF grammar (caddr e) non-terminal))] 
               [(eq? id '•)  (and (is-WF grammar (cadr e) non-terminal)
-                                 (or (zero⇀? grammar (cadr e)) ;; precisa desse or?
+                                 (or (member '0 (⇀ grammar (cadr e))) ;; precisa desse or?
                                      (is-WF grammar (caddr e) non-terminal)))]
               [(eq? id '!)  (is-WF grammar (cadr e) non-terminal)]
               [(eq? id '*)  (and (is-WF grammar (cadr e) non-terminal)
-                                 (zero⇀? grammar (cadr e)))]
+                                 (not (member '0 (⇀ grammar (cadr e)))))]
               [else  #f] 
               )
 
