@@ -1,6 +1,5 @@
 #lang racket
 (require racket/match)
-(require "./peg.rkt")
 (provide (all-defined-out))
 
 ;; Helpers
