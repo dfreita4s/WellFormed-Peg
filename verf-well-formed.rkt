@@ -56,6 +56,9 @@
     )
   )
 
+
+;; Look up for the expression which corresponds the grammar
+
 (define (lookup-nt grammar snt)
   (if (eq? grammar '∅)
       #f
